@@ -78,6 +78,9 @@ public class Controller implements ActionListener, KeyListener {
             case "ManualUsuario":
                 this.openManual();
                 break;
+            case "Atras":
+                this.changeToMenu();
+                break;
             case "Salir":
                 System.exit(0);
                 break;
@@ -250,7 +253,16 @@ public class Controller implements ActionListener, KeyListener {
         this.viewManager.setValuesToCondensationsReport();
     }
 
+    private void changeToMenu(){
+        if(this.viewManager.getIsPartitionsMenuActive()){
+            this.viewManager.setPartitionsMenuActive(false);
 
+        }
+        else
+            this.processManager.cleanAllLists();
+        this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
+        this.viewManager.changeToMainMenu();
+    }
     @Override
     public void keyTyped(KeyEvent e) {
         char c = e.getKeyChar();

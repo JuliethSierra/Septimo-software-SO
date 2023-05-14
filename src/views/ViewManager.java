@@ -15,6 +15,7 @@ public class ViewManager extends JFrame {
     private PanelMenuReports panelMenuReports;
     private Object[][] inQueue, readyList, finished, currentList, dispatchList, executionList, expirationList, finishedList, spaceList, condensations;
 
+    private boolean isPartitionsMenuActive = false;
     public ViewManager(ActionListener actionListener, KeyListener keyListener){
         this.setLayout(new BorderLayout());
         this.setTitle("Sexto Software");
@@ -119,7 +120,7 @@ public class ViewManager extends JFrame {
 
 
     public int getInQueueSize(){
-        return this.inQueue.length;
+        return this.currentList.length;
     }
 
 
@@ -171,10 +172,23 @@ public class ViewManager extends JFrame {
         this.setValuesToTableReport(this.finishedList, "Procesos Finalizados");
     }
     public void setValuesToSpaceReport(){
-        this.setValuesToTableReportCondensations(this.spaceList, "Huecos en particiones");
+        this.setValuesToTableReport(this.spaceList, "Huecos en particiones");
     }
     public void setValuesToCondensationsReport(){
         this.setValuesToTableReportCondensations(this.condensations, "condensciones");
+    }
+
+    public boolean getIsPartitionsMenuActive(){
+        return this.isPartitionsMenuActive;
+    }
+    public void setPartitionsMenuActive(boolean isActive){
+        this.isPartitionsMenuActive = isActive;
+    }
+    public void changeToMainMenu(){
+        this.remove(panelMenuReports);
+        this.add(this.panelMenu, BorderLayout.WEST);
+        SwingUtilities.updateComponentTreeUI(this);
+
     }
 
 }

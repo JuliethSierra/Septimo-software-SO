@@ -217,6 +217,7 @@ public class ProcessManager {
         this.newInqueue.clear();
         this.processList.clear();
         this.condensations.clear();
+        this.spaceList.clear();
     }
 
     public void initSimulation(){
@@ -260,7 +261,7 @@ public class ProcessManager {
 
     //Método para pruebas
     private void init() {
-        //readyList.addAll(inQueue);
+        readyList.addAll(newInqueue);
      /*   inQueue.add(new Process("p1", new BigInteger("10"), new BigInteger("10")));
         inQueue.add(new Process("p2", new BigInteger("5"), new BigInteger("20")));
         inQueue.add(new Process("p3", new BigInteger("15"), new BigInteger("15")));
