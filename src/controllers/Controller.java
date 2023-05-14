@@ -18,11 +18,11 @@ public class Controller implements ActionListener, KeyListener {
 
 
     public Controller(){
-        this.viewManager = new ViewManager(this, this);
+        //this.viewManager = new ViewManager(this, this);
         this.processManager = new ProcessManager();
-       /* this.initSimulation1();
+        this.initSimulation1();
         System.out.println("hola");
-        processManager.addCondensations();*/
+        processManager.addCondensations();
     }
     @Override
     public void actionPerformed(ActionEvent e) {
