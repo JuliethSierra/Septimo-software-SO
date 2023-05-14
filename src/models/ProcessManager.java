@@ -7,8 +7,9 @@ public class ProcessManager {
 
     private final int PROCESS_TIME = 5;
     private ArrayList<Process> inQueue, currentList;
-    private ArrayList<PartitionReport> space,readyList,newInqueue, dispatchList, executionList, expirationList, finishedList, finishedPartition;
+    private ArrayList<PartitionReport> spaceList,processList,readyList,newInqueue, dispatchList, executionList, expirationList, finishedList, finishedPartition;
     private ArrayList<Partition> partitions;
+    private ArrayList<Condensation> condensations;
 
     public ProcessManager(){
         this.partitions = new ArrayList<>();
@@ -21,7 +22,9 @@ public class ProcessManager {
         this.expirationList = new ArrayList<>();
         this.finishedPartition = new ArrayList<>();
         this.finishedList = new ArrayList<>();
-        this.space = new ArrayList<>();
+        this.processList = new ArrayList<>();
+        this.condensations = new ArrayList<>();
+        this.spaceList = new ArrayList<>();
     }
 
     public boolean isAlreadyProcessName(String name){
@@ -135,12 +138,28 @@ public class ProcessManager {
         this.partitions = partitions;
     }
 
-    public ArrayList<PartitionReport> getSpace() {
-        return space;
+    public ArrayList<PartitionReport> getProcessList() {
+        return processList;
     }
 
-    public void setSpace(ArrayList<PartitionReport> space) {
-        this.space = space;
+    public void setProcessList(ArrayList<PartitionReport> processList) {
+        this.processList = processList;
+    }
+
+    public ArrayList<PartitionReport> getSpaceList() {
+        return spaceList;
+    }
+
+    public void setSpaceList(ArrayList<PartitionReport> spaceList) {
+        this.spaceList = spaceList;
+    }
+
+    public ArrayList<Condensation> getCondensations() {
+        return condensations;
+    }
+
+    public void setCondensations(ArrayList<Condensation> condensations) {
+        this.condensations = condensations;
     }
 
     public ArrayList<PartitionReport> getNewInqueue() {
@@ -162,6 +181,8 @@ public class ProcessManager {
         this.finishedPartition.clear();
         this.partitions.clear();
         this.newInqueue.clear();
+        this.processList.clear();
+        this.condensations.clear();
     }
 
     public void initSimulation(){
@@ -222,10 +243,10 @@ public class ProcessManager {
         System.out.println(readyList.toString());
     }
 
-    private void loadToSpace(PartitionReport process) {
-        this.space.add(process);
+    private void loadToProcessList(PartitionReport process) {
+        this.processList.add(process);
         System.out.println("space: ");
-        System.out.println(space.toString());
+        System.out.println(processList.toString());
     }
     private void loadToDispatchQueue(PartitionReport partitionReport) {
         this.dispatchList.add(partitionReport);
@@ -245,6 +266,10 @@ public class ProcessManager {
         System.out.println("Finalizados: " + finishedList.toString());
     }
 
+    private void loadToCondensations(Condensation process) {
+        this.condensations.add(process);
+    }
+
     public BigInteger findMaxTime(){
         BigInteger num = new BigInteger("0");
         for (int i = 0; i < newInqueue.size(); i++) {
@@ -255,20 +280,50 @@ public class ProcessManager {
         return num;
     }
     public void sort(){
+        int s=0;
         this.iniSpace();
+        int count =0;
+        int count1 =1;
         for (int i = 0; i <= findMaxTime().intValue(); i++) {
-            if(space.get(i).getProcess().getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 1 || space.get(i).getProcess().getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 0){
-                this.loadToSpace(new PartitionReport(space.get(i).getPartitionName(),new Process(space.get(i).getProcess().getName(),space.get(i).getProcess().getTime().subtract(new BigInteger("5")), space.get(i).getProcess().getSize())));
+            if(processList.get(i).getProcess().getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 1 || processList.get(i).getProcess().getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 0){
+                this.loadToProcessList(new PartitionReport(processList.get(i).getPartitionName(),new Process(processList.get(i).getProcess().getName(), processList.get(i).getProcess().getTime().subtract(new BigInteger("5")), processList.get(i).getProcess().getSize())));
             }else{
-                this.loadToSpace(new PartitionReport(space.get(i).getPartitionName(),new Process(space.get(i).getProcess().getName(),new BigInteger("0"), space.get(i).getProcess().getSize())));
+                this.loadToProcessList(new PartitionReport(processList.get(i).getPartitionName(),new Process(processList.get(i).getProcess().getName(),new BigInteger("0"), processList.get(i).getProcess().getSize())));
+            }
+            count ++;
+
+            if (count == newInqueue.size()){
+                for (int j = i+1; j < processList.size(); j++) {
+                    System.out.println(processList.get(j));
+                    if(!(processList.get(j-1)==null)){
+                        j++;
+                    }
+                    if(processList.get(j-1).getProcess().getTime().compareTo(BigInteger.valueOf(0))==0 && processList.get(j).getProcess().getTime().compareTo(BigInteger.valueOf(0))==0){
+                        System.out.println("hueco");
+                        s = processList.get(j-1).getProcess().getSize().add(processList.get(j).getProcess().getSize()).intValue();
+                        System.out.println(s);
+                        loadToCondensations(new Condensation("C"+count1, BigInteger.valueOf(s),processList.get(j-1).getProcess().getSize(),processList.get(j).getProcess().getSize()));
+                        count1++;
+                    }
+
+                }
+                count1 =1;
+                count =0;
             }
         }
-        System.out.println(getFinishedPartition().toString());
+        spaceList.addAll(processList);
+        for (int i = 0; i < spaceList.size(); i++) {
+            if(spaceList.get(i).getProcess().getTime().compareTo(BigInteger.valueOf(0))==0){
+                spaceList.get(i).setProcessList(new Process("Hueco", processList.get(i).getProcess().getTime(), processList.get(i).getProcess().getSize()));
+            }
+        }
+        System.out.println("Condensations: ");
+        System.out.println(condensations.toString());
     }
 
     public void iniSpace(){
         for (int i = 0; i < inQueue.size(); i++) {
-            space.add(new PartitionReport("part"+String.valueOf(i+1), inQueue.get(i)));
+            processList.add(new PartitionReport("part"+String.valueOf(i+1), inQueue.get(i)));
         }
     }
 
