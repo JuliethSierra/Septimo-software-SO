@@ -20,20 +20,10 @@ public class Controller implements ActionListener, KeyListener {
     public Controller(){
         this.viewManager = new ViewManager(this, this);
         this.processManager = new ProcessManager();
-        this.initSimulation();
+       /* this.initSimulation1();
         System.out.println("hola");
-        processManager.addCondensations();
+        processManager.addCondensations();*/
     }
-    public void sort(){
-        for (int i = 0; i < processManager.getNewInqueue().size(); i++) {
-            for (int j = 0; j < processManager.getFinishedList().size(); j++) {
-                if (processManager.getNewInqueue().get(i).getPartitionName().equals(processManager.getFinishedList().get(j).getPartitionName()))
-                    processManager.getFinishedPartition().add(processManager.getFinishedList().get(j));
-            }
-        }
-        System.out.println(processManager.getFinishedPartition().toString());
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()){
@@ -58,6 +48,33 @@ public class Controller implements ActionListener, KeyListener {
             case "Reportes":
                 this.changeToReportMenu();
                 break;
+            case "Enviar":
+                this.initSimulation();
+                break;
+            case "Actuales":
+                this.setValuesToCurrentProcess();
+                break;
+            case "Listos":
+                this.setValuesToReadyReport();
+                break;
+            case "Despachados":
+                this.setValuesToDispatchReport();
+                break;
+            case "Ejecucion":
+                this.setValuesToExecReport();
+                break;
+            case "Expirados":
+                this.setValuesToExepReport();
+                break;
+            case "Finalizados":
+                this.setValuesToFinishedReport();
+                break;
+            case "Huecos":
+                this.setValuesToSpaceReport();
+                break;
+            case "Condensaciones":
+                this.setValuesToCondensationsReport();
+                break;
             case "ManualUsuario":
                 this.openManual();
                 break;
@@ -67,8 +84,38 @@ public class Controller implements ActionListener, KeyListener {
         }
     }
 
-    private void initSimulation(){
+    //método de prueba
+    private void initSimulation1(){
         processManager.initSimulation();
+    }
+    private void initSimulation(){
+        if(this.processManager.getInQueue().size() == 0){
+            Utilities.showErrorDialog("Debe ingresar al menos un proceso para iniciar la simulación");
+        } else{
+            int response = Utilities.showConfirmationWarning();
+            if(response == 0) {
+                processManager.initSimulation();
+                processManager.addCondensations();
+                Utilities.showDoneCPUProcess();
+                processManager.cleanQueueList();
+                processManager.cleanNewQueueList();
+                processManager.copyToCurrentProcess();
+                this.cleanMainTableProcess();
+                this.loadReportList();
+            }
+        }
+    }
+
+    private void loadReportList(){
+        viewManager.setCurrentList(processManager.getProcessListAsMatrixObject(processManager.getCurrentList()));
+        viewManager.setInQueueList(processManager.getProcessListAsMatrixObject(processManager.getInQueue()));
+        viewManager.setReadyList(processManager.getProcessListAsMatrixReportObject(processManager.getReadyList()));
+        viewManager.setDispatchList(processManager.getProcessListAsMatrixReportObject(processManager.getDispatchList()));
+        viewManager.setExecutionList(processManager.getProcessListAsMatrixReportObject(processManager.getExecutionList()));
+        viewManager.setExpirationList(processManager.getProcessListAsMatrixReportObject(processManager.getExpirationList()));
+        viewManager.setFinishedList(processManager.getProcessListAsMatrixReportObject(processManager.getFinishedList()));
+        viewManager.setSpaceList(processManager.getProcessListAsMatrixReportObject(processManager.getSpaceList()));
+        viewManager.setCondensationList(processManager.getProcessListAsMatrixReportCon(processManager.getCondensations()));
     }
 
     private void showCreateProcessDialog(){
@@ -164,7 +211,6 @@ public class Controller implements ActionListener, KeyListener {
         }
     }
 
-
     private void openManual(){
         try{
             java.lang.Process p = Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL "+"C:\\Users\\Usuario\\Desktop\\SO\\Software\\Renovar - ICETEX 2023-1.pdf");
@@ -173,6 +219,36 @@ public class Controller implements ActionListener, KeyListener {
         }
     }
 
+    private void cleanMainTableProcess(){
+        this.viewManager.setValuesToTable(processManager.getProcessListAsMatrixObject(processManager.getInQueue()), "Procesos Existentes");
+    }
+
+    public void setValuesToCurrentProcess(){
+        this.viewManager.setValuesToCurrentProcess();
+    }
+    public void setValuesToReadyReport(){
+        this.viewManager.setValuesToReadyReport();
+    }
+    public void setValuesToDispatchReport(){
+        this.viewManager.setValuesToDispatchReport();
+    }
+
+    public void setValuesToExecReport(){
+        this.viewManager.setValuesToExecReport();
+    }
+
+    public void setValuesToExepReport(){
+        this.viewManager.setValuesToExepReport();
+    }
+    public void setValuesToFinishedReport(){
+        this.viewManager.setValuesToFinishedReport();
+    }
+    public void setValuesToSpaceReport(){
+        this.viewManager.setValuesToSpaceReport();
+    }
+    public void setValuesToCondensationsReport(){
+        this.viewManager.setValuesToCondensationsReport();
+    }
 
 
     @Override

@@ -9,7 +9,7 @@ public class PanelMenuReports extends JPanel {
 
     private JLabel titleMenuReports;
 
-    private Button existingProcesses, readyReport, dispatchedReport, executionReport, expirationReport, blockReport, wakeReport, finishedReport, back;
+    private Button existingProcesses, readyReport, dispatchedReport, executionReport, expirationReport, finishedReport, back, space, coondensations;
 
     public PanelMenuReports(ActionListener listener){
         this.setLayout(new GridBagLayout());
@@ -31,11 +31,6 @@ public class PanelMenuReports extends JPanel {
         existingProcesses.addActionListener(listener);
         existingProcesses.setActionCommand("Actuales");
         Utilities.addComponent(this, this.existingProcesses, 0, 2);
-
-        blockReport = new Button("Ejecutados");
-        blockReport.addActionListener(listener);
-        blockReport.setActionCommand("Ejecutados");
-        Utilities.addComponent(this, this.blockReport, 0, 3);
 
         readyReport = new Button("Listos");
         readyReport.addActionListener(listener);
@@ -62,10 +57,15 @@ public class PanelMenuReports extends JPanel {
         finishedReport.setActionCommand("Finalizados");
         Utilities.addComponent(this, this.finishedReport, 0, 8);
 
-        finishedReport = new Button("No Ejecutados");
-        finishedReport.addActionListener(listener);
-        finishedReport.setActionCommand("NoEjecutados");
-        Utilities.addComponent(this, this.finishedReport, 0, 9);
+        space = new Button("Huecos En Memoria");
+        space.addActionListener(listener);
+        space.setActionCommand("Huecos");
+        Utilities.addComponent(this, this.space, 0, 9);
+
+        coondensations = new Button("Condensaciones");
+        coondensations.addActionListener(listener);
+        coondensations.setActionCommand("Condensaciones");
+        Utilities.addComponent(this, this.coondensations, 0, 10);
 
         back = new Button("Atrás");
         back.addActionListener(listener);

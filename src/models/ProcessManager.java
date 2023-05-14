@@ -55,6 +55,40 @@ public class ProcessManager {
         return processList;
     }
 
+    public Object[][] getProcessListAsMatrixReportObject(ArrayList<PartitionReport> list){
+        return this.parseArrayListToMatrixReportObject(list);
+    }
+
+    private Object[][] parseArrayListToMatrixReportObject(ArrayList<PartitionReport> list){
+        int sizeQueue = list.size();
+        Object[][] processList = new Object[sizeQueue][5];
+
+        for(int i = 0; i < sizeQueue; i++){
+            processList[i][0] = list.get(i).getPartitionName();
+            processList[i][1] = list.get(i).getProcess().getName();
+            processList[i][2] = list.get(i).getProcess().getTime();
+            processList[i][3] = list.get(i).getProcess().getSize();
+        }
+        return processList;
+    }
+
+    public Object[][] getProcessListAsMatrixReportCon(ArrayList<Condensation> list){
+        return this.parseArrayListToMatrixReportCon(list);
+    }
+
+    private Object[][] parseArrayListToMatrixReportCon(ArrayList<Condensation> list){
+        int sizeQueue = list.size();
+        Object[][] processList = new Object[sizeQueue][5];
+
+        for(int i = 0; i < sizeQueue; i++){
+            processList[i][0] = list.get(i).getName();
+            processList[i][1] = list.get(i).getSize();
+            processList[i][2] = list.get(i).getInitSize();
+            processList[i][3] = list.get(i).getFinishSize();
+        }
+        return processList;
+    }
+
     public Process getProcessInQueue(int indexDataInTable) {
         return this.inQueue.get(indexDataInTable);
     }
@@ -227,11 +261,11 @@ public class ProcessManager {
     //Método para pruebas
     private void init() {
         //readyList.addAll(inQueue);
-        inQueue.add(new Process("p1", new BigInteger("10"), new BigInteger("10")));
+     /*   inQueue.add(new Process("p1", new BigInteger("10"), new BigInteger("10")));
         inQueue.add(new Process("p2", new BigInteger("5"), new BigInteger("20")));
         inQueue.add(new Process("p3", new BigInteger("15"), new BigInteger("15")));
-        inQueue.add(new Process("p4", new BigInteger("4"), new BigInteger("5")));
-   /*     inQueue.add(new Process("p1", new BigInteger("10"), new BigInteger("10")));
+        inQueue.add(new Process("p4", new BigInteger("4"), new BigInteger("5")));*/
+   /*   inQueue.add(new Process("p1", new BigInteger("10"), new BigInteger("10")));
         inQueue.add(new Process("p2", new BigInteger("5"), new BigInteger("20")));
         inQueue.add(new Process("p3", new BigInteger("15"), new BigInteger("15")));
         inQueue.add(new Process("p4", new BigInteger("4"), new BigInteger("5")));
@@ -320,7 +354,7 @@ public class ProcessManager {
                         System.out.println(s);
                         loadToCondensations(new Condensation("C"+count1, BigInteger.valueOf(s),processList.get(j-1).getProcess().getSize(),processList.get(j).getProcess().getSize()));
                         count1++;
-                        //j++;
+                        j++;
                     }
                 }
                 count1 =1;
@@ -345,6 +379,12 @@ public class ProcessManager {
             processList.add(new PartitionReport("part"+String.valueOf(i+1), inQueue.get(i)));
         }
     }
+    public void cleanQueueList(){
+        inQueue.clear();
+    }
 
+    public void cleanNewQueueList(){
+        newInqueue.clear();
+    }
 
 }
