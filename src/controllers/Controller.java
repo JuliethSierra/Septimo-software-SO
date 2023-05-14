@@ -20,6 +20,18 @@ public class Controller implements ActionListener, KeyListener {
     public Controller(){
         this.viewManager = new ViewManager(this, this);
         this.processManager = new ProcessManager();
+        this.initSimulation();
+        System.out.println("hola");
+        processManager.sort();
+    }
+    public void sort(){
+        for (int i = 0; i < processManager.getNewInqueue().size(); i++) {
+            for (int j = 0; j < processManager.getFinishedList().size(); j++) {
+                if (processManager.getNewInqueue().get(i).getPartitionName().equals(processManager.getFinishedList().get(j).getPartitionName()))
+                    processManager.getFinishedPartition().add(processManager.getFinishedList().get(j));
+            }
+        }
+        System.out.println(processManager.getFinishedPartition().toString());
     }
 
     @Override
@@ -53,6 +65,10 @@ public class Controller implements ActionListener, KeyListener {
                 System.exit(0);
                 break;
         }
+    }
+
+    private void initSimulation(){
+        processManager.initSimulation();
     }
 
     private void showCreateProcessDialog(){
