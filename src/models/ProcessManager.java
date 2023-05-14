@@ -231,6 +231,18 @@ public class ProcessManager {
         inQueue.add(new Process("p2", new BigInteger("5"), new BigInteger("20")));
         inQueue.add(new Process("p3", new BigInteger("15"), new BigInteger("15")));
         inQueue.add(new Process("p4", new BigInteger("4"), new BigInteger("5")));
+   /*     inQueue.add(new Process("p1", new BigInteger("10"), new BigInteger("10")));
+        inQueue.add(new Process("p2", new BigInteger("5"), new BigInteger("20")));
+        inQueue.add(new Process("p3", new BigInteger("15"), new BigInteger("15")));
+        inQueue.add(new Process("p4", new BigInteger("4"), new BigInteger("5")));
+        inQueue.add(new Process("p5", new BigInteger("5"), new BigInteger("5")));
+        inQueue.add(new Process("p6", new BigInteger("10"), new BigInteger("10")));
+        inQueue.add(new Process("p7", new BigInteger("40"), new BigInteger("20")));
+        inQueue.add(new Process("p8", new BigInteger("60"), new BigInteger("30")));
+        inQueue.add(new Process("p9", new BigInteger("5"), new BigInteger("40")));
+        inQueue.add(new Process("p10", new BigInteger("16"), new BigInteger("5")));
+        inQueue.add(new Process("p11", new BigInteger("6"), new BigInteger("12")));
+        inQueue.add(new Process("p12", new BigInteger("8"), new BigInteger("22")));*/
     }
 
     public void copyToCurrentProcess(){
@@ -272,14 +284,18 @@ public class ProcessManager {
 
     public BigInteger findMaxTime(){
         BigInteger num = new BigInteger("0");
+        BigInteger num1 = new BigInteger("0");
         for (int i = 0; i < newInqueue.size(); i++) {
             if(newInqueue.get(i).getProcess().getTime().compareTo(num)==1){
-                num = newInqueue.get(i).getProcess().getTime().subtract(BigInteger.valueOf(PROCESS_TIME-1));
+                num = newInqueue.get(i).getProcess().getTime();
             }
         }
-        return num;
+        num1 = (num.divide(BigInteger.valueOf(PROCESS_TIME))).multiply(BigInteger.valueOf(newInqueue.size()));
+        num1 = num1.subtract(BigInteger.valueOf(1));
+        System.out.println(num1);
+        return num1;
     }
-    public void sort(){
+    public void addCondensations(){
         int s=0;
         this.iniSpace();
         int count =0;
@@ -293,19 +309,19 @@ public class ProcessManager {
             count ++;
 
             if (count == newInqueue.size()){
-                for (int j = i+1; j < processList.size(); j++) {
+                for (int j = i+2; j < processList.size(); j++) {
                     System.out.println(processList.get(j));
-                    if(!(processList.get(j-1)==null)){
-                        j++;
+                    if((processList.get(j-1)==null)){
+                        System.out.println("Error");
                     }
-                    if(processList.get(j-1).getProcess().getTime().compareTo(BigInteger.valueOf(0))==0 && processList.get(j).getProcess().getTime().compareTo(BigInteger.valueOf(0))==0){
+                    else if(processList.get(j-1).getProcess().getTime().compareTo(BigInteger.valueOf(0))==0 && processList.get(j).getProcess().getTime().compareTo(BigInteger.valueOf(0))==0){
                         System.out.println("hueco");
                         s = processList.get(j-1).getProcess().getSize().add(processList.get(j).getProcess().getSize()).intValue();
                         System.out.println(s);
                         loadToCondensations(new Condensation("C"+count1, BigInteger.valueOf(s),processList.get(j-1).getProcess().getSize(),processList.get(j).getProcess().getSize()));
                         count1++;
+                        //j++;
                     }
-
                 }
                 count1 =1;
                 count =0;
@@ -319,6 +335,9 @@ public class ProcessManager {
         }
         System.out.println("Condensations: ");
         System.out.println(condensations.toString());
+
+        System.out.println("Huecos: ");
+        System.out.println(spaceList.toString());
     }
 
     public void iniSpace(){

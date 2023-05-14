@@ -54,6 +54,6 @@ public class Condensation {
                 ", size=" + size +
                 ", initSize=" + initSize +
                 ", finishSize=" + finishSize +
-                '}';
+                '}' + "\n";
     }
 }

@@ -22,7 +22,7 @@ public class Controller implements ActionListener, KeyListener {
         this.processManager = new ProcessManager();
         this.initSimulation();
         System.out.println("hola");
-        processManager.sort();
+        processManager.addCondensations();
     }
     public void sort(){
         for (int i = 0; i < processManager.getNewInqueue().size(); i++) {
