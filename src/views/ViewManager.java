@@ -94,6 +94,10 @@ public class ViewManager extends JFrame {
         SwingUtilities.updateComponentTreeUI(this);
     }
 
+    public void cleanAllFields(){
+        this.dialogCreateProcess.cleanAllFields();
+    }
+
     public int getIndexDataInTable(){
         return this.panelTable.getIndexDataProcess();
     }
