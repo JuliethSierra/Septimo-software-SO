@@ -18,11 +18,8 @@ public class Controller implements ActionListener, KeyListener {
 
 
     public Controller(){
-        //this.viewManager = new ViewManager(this, this);
+        this.viewManager = new ViewManager(this, this);
         this.processManager = new ProcessManager();
-        this.initSimulation1();
-        System.out.println("hola");
-        processManager.addCondensations();
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -134,6 +131,7 @@ public class Controller implements ActionListener, KeyListener {
             Utilities.showErrorDialog("El nombre del proceso está vacío. Ingrese algún valor");
         } else if (this.processManager.isAlreadyProcessName(processName)) {
             Utilities.showErrorDialog("El nombre del proceso ya existe. Ingrese otro nombre");
+            this.viewManager.cleanAllFields();
         } else if (timeProcess.toString().equals("-1")) {
             Utilities.showErrorDialog("El tiempo del proceso está vacío. Ingrese un valor numérico entero");
         } else if (sizeProcess.toString().equals("-1")) {
@@ -174,6 +172,7 @@ public class Controller implements ActionListener, KeyListener {
         else if(!processToModify.getName().equals(modifyNameProcess)
                 && this.processManager.isAlreadyProcessName(modifyNameProcess)){
             Utilities.showErrorDialog("Ya existe un proceso con este nombre");
+            this.viewManager.cleanAllFields();
         }
         else if(this.viewManager.getProcessTime().toString().trim().equals("-1")){
             Utilities.showErrorDialog("El tiempo del proceso está vacío. Ingrese un valor numérico entero");
