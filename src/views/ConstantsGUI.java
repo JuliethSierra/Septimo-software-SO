@@ -19,7 +19,7 @@ public class ConstantsGUI {
 
 
     public static String[] HEADERS_WITH_PARTITION = {"Partición", "Nombre", "Tiempo", "Tamaño"};
-    public static String[] HEADERS_SPACE = {"Nombre", "Tamaño", "D_Init", "D_Fin"};
+    public static String[] HEADERS_SPACE = {"Nombre", "Tamaño"};
     public static String[] HEADERS_WITHOUT_PARTITION = {"Nombre", "Tiempo", "Tamaño"};
 
 

@@ -7,9 +7,9 @@ public class ProcessManager {
 
     private final int PROCESS_TIME = 5;
     private ArrayList<Process> inQueue, currentList;
-    private ArrayList<PartitionReport> spaceList,processList,readyList,newInqueue, dispatchList, executionList, expirationList, finishedList, finishedPartition;
+    private ArrayList<PartitionReport> spaceList,processList,readyList,newInqueue, dispatchList, executionList, expirationList, finishedList, finishedPartition, partitionList;
     private ArrayList<Partition> partitions;
-    private ArrayList<Condensation> condensations;
+    private ArrayList<Compaction> compactions;
 
     public ProcessManager(){
         this.partitions = new ArrayList<>();
@@ -23,8 +23,9 @@ public class ProcessManager {
         this.finishedPartition = new ArrayList<>();
         this.finishedList = new ArrayList<>();
         this.processList = new ArrayList<>();
-        this.condensations = new ArrayList<>();
+        this.compactions = new ArrayList<>();
         this.spaceList = new ArrayList<>();
+        this.partitionList = new ArrayList<>();
     }
 
     public boolean isAlreadyProcessName(String name){
@@ -72,19 +73,17 @@ public class ProcessManager {
         return processList;
     }
 
-    public Object[][] getProcessListAsMatrixReportCon(ArrayList<Condensation> list){
+    public Object[][] getProcessListAsMatrixReportCon(ArrayList<Compaction> list){
         return this.parseArrayListToMatrixReportCon(list);
     }
 
-    private Object[][] parseArrayListToMatrixReportCon(ArrayList<Condensation> list){
+    private Object[][] parseArrayListToMatrixReportCon(ArrayList<Compaction> list){
         int sizeQueue = list.size();
-        Object[][] processList = new Object[sizeQueue][5];
+        Object[][] processList = new Object[sizeQueue][2];
 
         for(int i = 0; i < sizeQueue; i++){
             processList[i][0] = list.get(i).getName();
             processList[i][1] = list.get(i).getSize();
-            processList[i][2] = list.get(i).getInitSize();
-            processList[i][3] = list.get(i).getFinishSize();
         }
         return processList;
     }
@@ -188,12 +187,12 @@ public class ProcessManager {
         this.spaceList = spaceList;
     }
 
-    public ArrayList<Condensation> getCondensations() {
-        return condensations;
+    public ArrayList<Compaction> getCompactions() {
+        return compactions;
     }
 
-    public void setCondensations(ArrayList<Condensation> condensations) {
-        this.condensations = condensations;
+    public void setCompactions(ArrayList<Compaction> compactions) {
+        this.compactions = compactions;
     }
 
     public ArrayList<PartitionReport> getNewInqueue() {
@@ -216,12 +215,11 @@ public class ProcessManager {
         this.partitions.clear();
         this.newInqueue.clear();
         this.processList.clear();
-        this.condensations.clear();
+        this.compactions.clear();
         this.spaceList.clear();
     }
 
     public void initSimulation(){
-        //this.generateCondensations();
         this.init();
         this.initNewInQueue();
         this.copyToCurrentProcess();
@@ -246,47 +244,6 @@ public class ProcessManager {
         }
     }
 
-    private void generateCondensations(){
-        ArrayList<Process> newList = new ArrayList<>(inQueue);
-        while(this.areZeros(newList)){
-            for(int i = 0; i < newList.size(); i++){
-                if(newList.get(i).getTime().compareTo(new BigInteger("0")) == 1){
-                    int value = newList.get(i).getTime().intValue() - PROCESS_TIME;
-                    if(value <= 0)
-                        value = 0;
-                    newList.get(i).setTime(new BigInteger(String.valueOf(value)));
-                }
-            }
-            this.verifyContiguous(newList);
-        }
-    }
-
-    private boolean areZeros(ArrayList<Process> newList) {
-        for(Process process : newList){
-            if(process.getTime().compareTo(new BigInteger("0")) == 1) return true;
-        }
-        return false;
-    }
-
-    private void verifyContiguous(ArrayList<Process> newList) {
-        for(int i = 0; i < newList.size() - 1; i++){
-            if(newList.get(i).getTime().compareTo(new BigInteger("0")) == 0){
-                 if(newList.get(i - 1) != null && newList.get(i + 1) != null){
-                    if(newList.get(i - 1).getTime().equals(BigInteger.ZERO)){
-
-                    }
-
-                }
-                else if(newList.get(i -1) == null){
-
-                }
-                else if(newList.get(i + 1) == null){
-
-                }
-            }
-        }
-    }
-
     private BigInteger consumeTimeProcess(Process process) {
         return (process.getTime().subtract(BigInteger.valueOf(PROCESS_TIME)));
     }
@@ -300,35 +257,12 @@ public class ProcessManager {
         readyList.addAll(newInqueue);
     }
 
-
-    //Método para pruebas
     private void init() {
         readyList.addAll(newInqueue);
-        inQueue.add(new Process("p1", new BigInteger("10"), new BigInteger("10")));
-        inQueue.add(new Process("p2", new BigInteger("5"), new BigInteger("20")));
-        inQueue.add(new Process("p3", new BigInteger("15"), new BigInteger("15")));
-        inQueue.add(new Process("p4", new BigInteger("4"), new BigInteger("5")));
-
-
-        /*inQueue.add(new Process("p1", new BigInteger("5"), new BigInteger("10")));
-        inQueue.add(new Process("p2", new BigInteger("5"), new BigInteger("20")));
-        inQueue.add(new Process("p3", new BigInteger("15"), new BigInteger("15")));
+        inQueue.add(new Process("p1", new BigInteger("5"), new BigInteger("10")));
+        inQueue.add(new Process("p2", new BigInteger("5"), new BigInteger("15")));
+        inQueue.add(new Process("p3", new BigInteger("5"), new BigInteger("10")));
         inQueue.add(new Process("p4", new BigInteger("5"), new BigInteger("5")));
-        inQueue.add(new Process("p5", new BigInteger("5"), new BigInteger("5")));*/
-
-
-        /*inQueue.add(new Process("p1", new BigInteger("10"), new BigInteger("10")));
-        inQueue.add(new Process("p2", new BigInteger("5"), new BigInteger("20")));
-        inQueue.add(new Process("p3", new BigInteger("15"), new BigInteger("15")));
-        inQueue.add(new Process("p4", new BigInteger("4"), new BigInteger("5")));
-        inQueue.add(new Process("p5", new BigInteger("5"), new BigInteger("5")));
-        inQueue.add(new Process("p6", new BigInteger("10"), new BigInteger("10")));
-        inQueue.add(new Process("p7", new BigInteger("40"), new BigInteger("20")));
-        inQueue.add(new Process("p8", new BigInteger("60"), new BigInteger("30")));
-        inQueue.add(new Process("p9", new BigInteger("5"), new BigInteger("40")));
-        inQueue.add(new Process("p10", new BigInteger("16"), new BigInteger("5")));
-        inQueue.add(new Process("p11", new BigInteger("6"), new BigInteger("12")));
-        inQueue.add(new Process("p12", new BigInteger("8"), new BigInteger("22")));*/
     }
 
     public void copyToCurrentProcess(){
@@ -337,35 +271,26 @@ public class ProcessManager {
 
     private void loadToReadyQueue(PartitionReport process) {
         this.readyList.add(process);
-        System.out.println("Listos: ");
-        System.out.println(readyList.toString());
     }
 
     private void loadToProcessList(PartitionReport process) {
         this.processList.add(process);
-        System.out.println("space: ");
-        System.out.println(processList.toString());
     }
     private void loadToDispatchQueue(PartitionReport partitionReport) {
         this.dispatchList.add(partitionReport);
-        System.out.println("Despachados: " + dispatchList.toString());
     }
     private void loadToExecQueue(PartitionReport process) {
         this.executionList.add(process);
-        System.out.println("Ejecución: " + executionList.toString());
     }
     private void loadToExpirationQueue(PartitionReport process) {
         this.expirationList.add(process);
-        System.out.println("Expiración: ");
-        System.out.println(expirationList.toString());
     }
     private void loadToFinishedQueue(PartitionReport process) {
         this.finishedList.add(process);
-        System.out.println("Finalizados: " + finishedList.toString());
     }
 
-    private void loadToCondensations(Condensation process) {
-        this.condensations.add(process);
+    private void loadToCompactions(Compaction process) {
+        this.compactions.add(process);
     }
 
     public BigInteger findMaxTime(){
@@ -382,64 +307,77 @@ public class ProcessManager {
     }
 
 
-    public void addCondensations(){
-        int s=0;
-        int s1=0;
-        this.iniSpace();
-        int count =0;
-        int count1 =0;
-        for (int i = 0; i <= findMaxTime().intValue(); i++) {
-            if(processList.get(i).getProcess().getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 1 || processList.get(i).getProcess().getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 0){
-                this.loadToProcessList(new PartitionReport(processList.get(i).getPartitionName(),new Process(processList.get(i).getProcess().getName(), processList.get(i).getProcess().getTime().subtract(new BigInteger("5")), processList.get(i).getProcess().getSize())));
-            }else{
-                this.loadToProcessList(new PartitionReport(processList.get(i).getPartitionName(),new Process(processList.get(i).getProcess().getName(),new BigInteger("0"), processList.get(i).getProcess().getSize())));
-            }
-            count ++;
-            if (count == newInqueue.size()){
-                for (int j = i+1; j < processList.size(); j++) {
-                    System.out.println(j + "j");
-                    System.out.println(processList.get(j));
-                    if(processList.get(j).getProcess().getTime().compareTo(BigInteger.valueOf(0)) == 0){
-                        s+=processList.get(j).getProcess().getSize().intValue();
-                        s1++;
-                        System.out.println(s+"s");
-                        System.out.println(s1+"s1");
 
-                        if (s1 > 1 && j + 1 < processList.size() && (!(processList.get(j + 1).getProcess().getTime().compareTo(BigInteger.valueOf(0)) == 0))) {
-                            loadToCondensations(new Condensation("C"+count1++, BigInteger.valueOf(s),processList.get(j-1).getProcess().getSize(),processList.get(j).getProcess().getSize().add(processList.get(j-1).getProcess().getSize())));
-                            count = 0;
-                            s1 = 0;
-                            s = 0;
+    public void addCompactions(){
+        this.iniSpace();
+        int processCount = 0;
+        int size =0;
+        int partitionCount = newInqueue.size()+1;
+        for (int i = 0; i <= findMaxTime().intValue(); i++) {
+            if (processList.get(i).getProcess().getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 1 || processList.get(i).getProcess().getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 0) {
+                this.loadToProcessList(new PartitionReport(processList.get(i).getPartitionName(), new Process(processList.get(i).getProcess().getName(), processList.get(i).getProcess().getTime().subtract(BigInteger.valueOf(PROCESS_TIME)), processList.get(i).getProcess().getSize())));
+            } else {
+                this.loadToProcessList(new PartitionReport(processList.get(i).getPartitionName(), new Process(processList.get(i).getProcess().getName(), new BigInteger("0"), processList.get(i).getProcess().getSize())));
+            }
+            processCount++;
+            if (processCount == newInqueue.size()) {
+                ArrayList<PartitionReport> processTimeInZero = new ArrayList<>();
+                for (int j = i+1; j < processList.size(); j++) {
+                    if(processList.get(j).getProcess().getTime().compareTo(BigInteger.valueOf(0)) == 0){
+                        processTimeInZero.add(new PartitionReport(processList.get(j).getPartitionName(), new Process(processList.get(j).getProcess().getName(), processList.get(j).getProcess().getTime(), processList.get(j).getProcess().getSize())));
+                        size+=processList.get(j).getProcess().getSize().intValue();
+                    }else{
+                        spaceList.add(new PartitionReport(processList.get(j).getPartitionName(),new Process(processList.get(j).getProcess().getName(), processList.get(j).getProcess().getTime(), processList.get(j).getProcess().getSize())));
+                        if(!partitionNameAlreadyExist(processList.get(j).getPartitionName())){
+                            partitionList.add(new PartitionReport(processList.get(j).getPartitionName(),new Process(processList.get(j).getProcess().getName(), processList.get(j).getProcess().getTime(), processList.get(j).getProcess().getSize())));
                         }
-                        else if(j + 1 == processList.size() && s1 > 1){
-                            loadToCondensations(new Condensation("C"+count1++, BigInteger.valueOf(s),processList.get(j-1).getProcess().getSize(),processList.get(j).getProcess().getSize().add(processList.get(j-1).getProcess().getSize())));
-                            count = 0;
-                            s1 = 0;
-                            s = 0;
+                    }
+
+                }
+                processCount =0;
+                spaceList.addAll(processTimeInZero);
+                if(processTimeInZero.size() > 1){
+                    if(partitionList.size() > 0){
+                        if(partitionList.get(partitionList.size()-1).getProcess().getTime().compareTo(BigInteger.valueOf(0)) == 0){
+                            if(partitionList.get(partitionList.size()-1).getProcess().getSize().compareTo(BigInteger.valueOf(size)) == -1){
+                                partitionList.add(new PartitionReport("part"+partitionCount++, new Process("Libre", new BigInteger("0"), BigInteger.valueOf(size))));
+                            }
+                        }else{
+                            partitionList.add(new PartitionReport("part"+partitionCount++, new Process("Libre", new BigInteger("0"), BigInteger.valueOf(size))));
                         }
                     }else {
-                        s=0;
-                        s1=0;
+                        partitionList.add(new PartitionReport("part"+partitionCount++, new Process("Libre", new BigInteger("0"), BigInteger.valueOf(size))));
                     }
                 }
-                //count1++;
-                s=0;
-                count =0;
+                size =0;
             }
         }
-        spaceList.addAll(processList);
-        for (int i = 0; i < spaceList.size(); i++) {
-            if(spaceList.get(i).getProcess().getTime().compareTo(BigInteger.valueOf(0))==0){
-                spaceList.get(i).setProcessList(new Process("Hueco", processList.get(i).getProcess().getTime(), processList.get(i).getProcess().getSize()));
-            }
-        }
-        System.out.println("Condensations: ");
-        System.out.println(condensations.toString());
 
-        System.out.println("Huecos: ");
-       // System.out.println(spaceList.toString());
+        this.fillCompactions();
+        System.out.println("Compactions:");
+        System.out.println(compactions.toString());
+
+        System.out.println("PartitionList:");
+        System.out.println(partitionList.toString());
     }
 
+
+    private void fillCompactions(){
+        int counter = 1;
+        for (int i = 0; i < partitionList.size(); i++) {
+            if (partitionList.get(i).getProcess().getTime().compareTo(BigInteger.ZERO) == 0){
+                loadToCompactions(new Compaction("Compact" + counter++ , partitionList.get(i).getProcess().getSize()));
+            }
+        }
+    }
+    private boolean partitionNameAlreadyExist(String partitionName){
+        for (int i = 0; i < partitionList.size(); i++) {
+            if (partitionList.get(i).getPartitionName().equals(partitionName)){
+                return true;
+            }
+        }
+        return false;
+    }
     public void iniSpace(){
         for (int i = 0; i < inQueue.size(); i++) {
             processList.add(new PartitionReport("part"+String.valueOf(i+1), inQueue.get(i)));

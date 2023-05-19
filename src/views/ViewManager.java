@@ -119,7 +119,7 @@ public class ViewManager extends JFrame {
     }
 
     public void setValuesToCurrentProcess(){
-        this.setValuesToTable(this.currentList, "Procesos Enviados");
+        this.setValuesToTable(this.currentList, "Procesos Actuales");
     }
 
 

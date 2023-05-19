@@ -18,8 +18,10 @@ public class Controller implements ActionListener, KeyListener {
 
 
     public Controller(){
-        this.viewManager = new ViewManager(this, this);
+        //this.viewManager = new ViewManager(this, this);
         this.processManager = new ProcessManager();
+        processManager.initSimulation();
+        processManager.addCompactions();
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -95,7 +97,7 @@ public class Controller implements ActionListener, KeyListener {
             int response = Utilities.showConfirmationWarning();
             if(response == 0) {
                 processManager.initSimulation();
-                processManager.addCondensations();
+                processManager.addCompactions();
                 Utilities.showDoneCPUProcess();
                 processManager.cleanQueueList();
                 processManager.cleanNewQueueList();
@@ -115,7 +117,7 @@ public class Controller implements ActionListener, KeyListener {
         viewManager.setExpirationList(processManager.getProcessListAsMatrixReportObject(processManager.getExpirationList()));
         viewManager.setFinishedList(processManager.getProcessListAsMatrixReportObject(processManager.getFinishedList()));
         viewManager.setSpaceList(processManager.getProcessListAsMatrixReportObject(processManager.getSpaceList()));
-        viewManager.setCondensationList(processManager.getProcessListAsMatrixReportCon(processManager.getCondensations()));
+        viewManager.setCondensationList(processManager.getProcessListAsMatrixReportCon(processManager.getCompactions()));
     }
 
     private void showCreateProcessDialog(){
@@ -172,7 +174,6 @@ public class Controller implements ActionListener, KeyListener {
         else if(!processToModify.getName().equals(modifyNameProcess)
                 && this.processManager.isAlreadyProcessName(modifyNameProcess)){
             Utilities.showErrorDialog("Ya existe un proceso con este nombre");
-            this.viewManager.cleanAllFields();
         }
         else if(this.viewManager.getProcessTime().toString().trim().equals("-1")){
             Utilities.showErrorDialog("El tiempo del proceso está vacío. Ingrese un valor numérico entero");
@@ -196,7 +197,7 @@ public class Controller implements ActionListener, KeyListener {
             int confirmation = Utilities.showConfirmationWarning();
             if(confirmation == 0){
                 this.processManager.deleteProcessInQueue(this.viewManager.getIndexDataInTable());
-                this.viewManager.setValuesToCurrentProcess();
+                this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
             }
 
         }
@@ -215,7 +216,7 @@ public class Controller implements ActionListener, KeyListener {
 
     private void openManual(){
         try{
-            java.lang.Process p = Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL "+"C:\\Users\\Usuario\\Desktop\\SO\\Software\\Renovar - ICETEX 2023-1.pdf");
+            java.lang.Process p = Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL "+"C:\\Users\\julie\\OneDrive\\Escritorio\\2023 I\\SISTEMAS OPERATVOS\\SOFTWARE\\SO-SUS-SW-06-SIERRA-VIASUS-ANDREA-JULIETH_SÁNCHEZ-SALAS-DANIEL-ANTONIO-15-MAY-2023\\Sexto-Software-SO\\Manual de usuario.pdf");
         } catch (Exception e){
             System.out.println("El archivo no se puede abrir");
         }
