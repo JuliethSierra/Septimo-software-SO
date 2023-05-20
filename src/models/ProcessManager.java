@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class ProcessManager {
 
-    private final int PROCESS_TIME = 5;
+    private final int PROCESS_TIME = 1;
     private ArrayList<Process> inQueue, currentList;
     private ArrayList<PartitionReport> spaceList,processList,readyList,newInqueue, dispatchList, executionList, expirationList, finishedList, finishedPartition, partitionList;
     private ArrayList<Partition> partitions;
@@ -259,10 +259,27 @@ public class ProcessManager {
 
     private void init() {
         readyList.addAll(newInqueue);
-        inQueue.add(new Process("p1", new BigInteger("5"), new BigInteger("10")));
+        /*inQueue.add(new Process("p1", new BigInteger("10"), new BigInteger("10")));
         inQueue.add(new Process("p2", new BigInteger("5"), new BigInteger("15")));
-        inQueue.add(new Process("p3", new BigInteger("5"), new BigInteger("10")));
-        inQueue.add(new Process("p4", new BigInteger("5"), new BigInteger("5")));
+        inQueue.add(new Process("p3", new BigInteger("15"), new BigInteger("10")));
+        inQueue.add(new Process("p4", new BigInteger("4"), new BigInteger("5")));*/
+
+       /* inQueue.add(new Process("p11", new BigInteger("5"), new BigInteger("11")));
+        inQueue.add(new Process("p15", new BigInteger("7"), new BigInteger("15")));
+        inQueue.add(new Process("p18", new BigInteger("8"), new BigInteger("18")));
+        inQueue.add(new Process("p6", new BigInteger("3"), new BigInteger("6")));
+        inQueue.add(new Process("p9", new BigInteger("4"), new BigInteger("9")));
+        inQueue.add(new Process("p20", new BigInteger("2"), new BigInteger("20")));
+        inQueue.add(new Process("p13", new BigInteger("3"), new BigInteger("13")));*/
+
+      /*  inQueue.add(new Process("p11", new BigInteger("5"), new BigInteger("11")));
+        inQueue.add(new Process("p15", new BigInteger("7"), new BigInteger("15")));
+        inQueue.add(new Process("p18", new BigInteger("8"), new BigInteger("18")));
+        inQueue.add(new Process("p6", new BigInteger("3"), new BigInteger("6")));
+        inQueue.add(new Process("p9", new BigInteger("4"), new BigInteger("9")));
+        inQueue.add(new Process("p20", new BigInteger("2"), new BigInteger("20")));
+        inQueue.add(new Process("p13", new BigInteger("3"), new BigInteger("13")));
+        inQueue.add(new Process("p14", new BigInteger("2"), new BigInteger("14")));*/
     }
 
     public void copyToCurrentProcess(){
@@ -359,6 +376,12 @@ public class ProcessManager {
 
         System.out.println("PartitionList:");
         System.out.println(partitionList.toString());
+
+        System.out.println("SpaceList:");
+        System.out.println(spaceList.toString());
+
+        System.out.println("Finish:");
+        System.out.println(finishedList.toString());
     }
 
 

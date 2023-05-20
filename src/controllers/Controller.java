@@ -18,7 +18,7 @@ public class Controller implements ActionListener, KeyListener {
 
 
     public Controller(){
-        //this.viewManager = new ViewManager(this, this);
+        this.viewManager = new ViewManager(this, this);
         this.processManager = new ProcessManager();
         processManager.initSimulation();
         processManager.addCompactions();
